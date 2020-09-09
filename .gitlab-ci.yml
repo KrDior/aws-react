@@ -1,0 +1,45 @@
+image: node:latest
+
+variables:
+  AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+  AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+
+stages:
+  - setup
+  - lint
+  - test
+  - build
+  - deploy
+
+cache:
+  paths:
+  - node_modules/
+  - build/
+
+setup:
+  stage: setup
+  script:
+    - npm install
+
+lint:
+  stage: lint
+  script:
+    - npm run lint
+
+test:
+  stage: test
+  script:
+    - npm run test
+
+build:
+  stage: build
+  script:
+    - npm run build
+
+deploy:
+  stage: deploy
+  before_script:
+    - npm config set prefix /usr/local
+    - npm install -g serverless
+  script:
+    - serverless deploy --verbose
